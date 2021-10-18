@@ -10,6 +10,8 @@ public class Car {
     public Car() {
     }
 
+
+
     public static class CarBuilder{
         private final Car car = new Car();
 
@@ -113,13 +115,7 @@ public class Car {
 
     @Override
     public String toString() {
-        return "Car{" +
-                "carId=" + carId +
-                ", carModel='" + carModel + '\'' +
-                ", carGraduationYear='" + carGraduationYear + '\'' +
-                ", carCosts=" + carCosts +
-                ", carRegistrationNumber='" + carRegistrationNumber + '\'' +
-                '}';
+        return "Car: " + carId +", " + carModel + ", " + carGraduationYear +", " + carCosts +", " + carRegistrationNumber;
     }
 
 }
