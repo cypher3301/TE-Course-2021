@@ -3,7 +3,7 @@ package model;
 public class Car {
     private long carId;
     private String carModel;
-    private String carGraduationYear;
+    private int carGraduationYear;
     private double carCosts;
     private String carRegistrationNumber;
 
@@ -29,7 +29,7 @@ public class Car {
             return this;
         }
 
-        public CarBuilder setCarGraduationYear(String carGraduationYear) {
+        public CarBuilder setCarGraduationYear(int carGraduationYear) {
             car.carGraduationYear = carGraduationYear;
             return this;
         }
@@ -61,11 +61,11 @@ public class Car {
         this.carModel = carModel;
     }
 
-    public String getCarGraduationYear() {
+    public int getCarGraduationYear() {
         return carGraduationYear;
     }
 
-    public void setCarGraduationYear(String carGraduationYear) {
+    public void setCarGraduationYear(int carGraduationYear) {
         this.carGraduationYear = carGraduationYear;
     }
 
@@ -85,6 +85,7 @@ public class Car {
         this.carRegistrationNumber = carRegistrationNumber;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -93,10 +94,9 @@ public class Car {
         Car car = (Car) o;
 
         if (getCarId() != car.getCarId()) return false;
+        if (getCarGraduationYear() != car.getCarGraduationYear()) return false;
         if (Double.compare(car.getCarCosts(), getCarCosts()) != 0) return false;
         if (getCarModel() != null ? !getCarModel().equals(car.getCarModel()) : car.getCarModel() != null) return false;
-        if (getCarGraduationYear() != null ? !getCarGraduationYear().equals(car.getCarGraduationYear()) : car.getCarGraduationYear() != null)
-            return false;
         return getCarRegistrationNumber() != null ? getCarRegistrationNumber().equals(car.getCarRegistrationNumber()) : car.getCarRegistrationNumber() == null;
     }
 
@@ -106,7 +106,7 @@ public class Car {
         long temp;
         result = (int) (getCarId() ^ (getCarId() >>> 32));
         result = 31 * result + (getCarModel() != null ? getCarModel().hashCode() : 0);
-        result = 31 * result + (getCarGraduationYear() != null ? getCarGraduationYear().hashCode() : 0);
+        result = 31 * result + getCarGraduationYear();
         temp = Double.doubleToLongBits(getCarCosts());
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (getCarRegistrationNumber() != null ? getCarRegistrationNumber().hashCode() : 0);
