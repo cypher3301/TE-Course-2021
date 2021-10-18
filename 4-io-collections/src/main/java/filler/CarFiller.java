@@ -15,8 +15,8 @@ public class CarFiller {
         Random random = new Random();
         return new Car.CarBuilder()
                 .setCarId(Math.abs(random.nextInt()))
-                .setCarModel(String.valueOf(Math.abs(random.nextInt()%Math.abs(random.nextInt()%24))))
-                .setCarGraduationYear(String.valueOf(Math.abs(random.nextInt())%70+1950))
+                .setCarModel(String.valueOf(Math.abs(random.nextInt()%99999999)))
+                .setCarGraduationYear(Math.abs(random.nextInt())%70+1950)
                 .setCarCosts(Math.abs(random.nextInt()%2500000))
                 .setCarRegistrationNumber(String.valueOf(Math.abs(random.nextInt()%9999)))
                 .build();
