@@ -1,16 +1,18 @@
 package java8.exercises;
 
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -21,18 +23,19 @@ public class Exercises {
 // a static List<String> defined at the bottom of this file.
 
     @Test
-    @Disabled
+//    @Disabled
     public void printAllWords() {
-        /* TODO */
+        wordList.forEach(System.out::println);
         // no assertions
     }
 
 // Exercise 2: Convert all words in wordList to upper case,
 // and gather the result into an output list.
 
-    @Test @Disabled
+    @Test
+//    @Disabled
     public void upperCaseWords() {
-        List<String> output = null; /* TODO */
+        List<String> output = wordList.stream().map(String::toUpperCase).collect(Collectors.toList());
 
         assertEquals(
                 Arrays.asList(
@@ -45,9 +48,10 @@ public class Exercises {
 // Exercise 3: Find all the words in wordList that have even length
 // and put them into an output list.
 
-    @Test @Disabled
+    @Test
+//    @Disabled
     public void findEvenLengthWords() {
-        List<String> output = null; /* TODO */
+        List<String> output = wordList.stream().filter(s -> s.length() % 2 == 0).collect(Collectors.toList());
 
         assertEquals(
                 Arrays.asList(
@@ -61,18 +65,20 @@ public class Exercises {
 // The text file is "SonnetI.txt" (Shakespeare's first sonnet) which is
 // located at the root of this project.
 
-    @Test @Disabled
+    @Test
+//    @Disabled
     public void countLinesInFile() throws IOException {
-        long count = 0L; /* TODO */
+        long count = reader.lines().count();
 
         assertEquals(14, count);
     }
 
 // Exercise 5: Join lines 3-4 from the text file into a single string.
 
-    @Test @Disabled
+    @Test
+//    @Disabled
     public void joinLineRange() throws IOException {
-        String output = null; /* TODO */
+        String output = reader.lines().skip(2).limit(2).collect(Collectors.joining());
 
         assertEquals(
                 "But as the riper should by time decease," +
@@ -82,9 +88,10 @@ public class Exercises {
 
 // Exercise 6: Find the length of the longest line in the file.
 
-    @Test @Disabled
+    @Test
+//    @Disabled
     public void lengthOfLongestLine() throws IOException {
-        int longest = 0; /* TODO */
+        int longest = reader.lines().mapToInt(String::length).max().getAsInt();
 
         assertEquals(longest, 53);
     }
@@ -94,9 +101,10 @@ public class Exercises {
 // Splitting this way results in "words" that are the empty string,
 // which should be discarded. REGEXP is defined at the bottom of this file.
 
-    @Test @Disabled
+    @Test
+//    @Disabled
     public void listOfAllWords() throws IOException {
-        List<String> output = null; /* TODO */
+        List<String> output = reader.lines().flatMap(s -> Stream.of(s.split(REGEXP))).filter(s1 -> !s1.isEmpty()).collect(Collectors.toList());
 
         assertEquals(
                 Arrays.asList(
@@ -120,9 +128,15 @@ public class Exercises {
 
 // Exercise 8: Create a list containing the words, lowercased, in alphabetical order.
 
-    @Test @Disabled
+    @Test
+//    @Disabled
     public void sortedLowerCase() throws IOException {
-        List<String> output = null; /* TODO */
+        List<String> output = reader.lines()
+                .flatMap(s -> Stream.of(s.split(REGEXP)))
+                .filter(s -> !s.isEmpty())
+                .map(String::toLowerCase)
+                .sorted()
+                .collect(Collectors.toList());
 
         assertEquals(
                 Arrays.asList(
@@ -148,9 +162,16 @@ public class Exercises {
 // Exercise 9: Sort unique, lower-cased words by length, then alphabetically
 // within length, and place the result into an output list.
 
-    @Test @Disabled
+    @Test
+//    @Disabled
     public void sortedLowerCaseDistinctByLengthThenAlphabetically() throws IOException {
-        List<String> output = null; /* TODO */
+        List<String> output = reader.lines()
+                .flatMap(s -> Stream.of(s.split(REGEXP)))
+                .filter(s -> !s.isEmpty())
+                .map(String::toLowerCase)
+                .distinct()
+                .sorted(Comparator.comparingInt(String::length).thenComparing(Comparator.naturalOrder()))
+                .collect(Collectors.toList());
 
         assertEquals(
                 Arrays.asList(
@@ -175,9 +196,13 @@ public class Exercises {
 // list of words of that length. Don't bother with uniqueness or lower-
 // casing the words.
 
-    @Test @Disabled
+    @Test
+//    @Disabled
     public void mapLengthToWordList() throws IOException {
-        Map<Integer, List<String>> map = null; /* TODO */
+        Map<Integer, List<String>> map = reader.lines()
+                .flatMap(s -> Stream.of(s.split(REGEXP)))
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.groupingBy(String::length));
 
         assertEquals(6, map.get(7).size());
         assertEquals(Arrays.asList("increase", "ornament"), map.get(8));
@@ -192,15 +217,20 @@ public class Exercises {
 // lower case. Extra challenge: implement two solutions, one that uses
 // groupingBy() and the other that uses toMap().
 
-    @Test @Disabled
+    @Test
+//    @Disabled
     public void wordFrequencies() throws IOException {
-        Map<String, Long> map = null; /* TODO */
+        Map<String, Long> map = reader.lines()
+                .flatMap(s -> Stream.of(s.split(REGEXP)))
+                .filter(s -> !s.isEmpty())
+//                        .collect(Collectors.groupingBy(s->s,Collectors.counting()));
+                .collect(Collectors.toMap(s -> s, s -> 1L, Long::sum));
 
-        assertEquals(2L, (long)map.get("tender"));
-        assertEquals(6L, (long)map.get("the"));
-        assertEquals(1L, (long)map.get("churl"));
-        assertEquals(2L, (long)map.get("thine"));
-        assertEquals(3L, (long)map.get("world"));
+        assertEquals(2L, (long) map.get("tender"));
+        assertEquals(6L, (long) map.get("the"));
+        assertEquals(1L, (long) map.get("churl"));
+        assertEquals(2L, (long) map.get("thine"));
+        assertEquals(3L, (long) map.get("world"));
         assertFalse(map.containsKey("lambda"));
     }
 
@@ -214,14 +244,50 @@ public class Exercises {
 // representation of the result would be:
 //     {f={3=[foo]}, b={3=[bar, baz], 4=[bazz]}}.
 
-    @Test @Disabled
+    @Test
+//    @Disabled
     public void nestedMaps() throws IOException {
-        Map<String, Map<Integer, List<String>>> map = null; /* TODO */
+        Map<String, Map<Integer, List<String>>> map;
+//                reader.lines()
+//                .flatMap(s -> Stream.of(s.split(REGEXP)))
+//                .filter(s -> !s.isEmpty())
+//                        .collect(Collectors.groupingBy(s->s.substring(0,1), Collectors.groupingBy(String::length)));
+
+        List<String> collect = reader.lines()
+                .flatMap(s -> Stream.of(s.split(REGEXP)))
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+
+        map = new HashMap<>();
+        Map<Integer, List<String>> integerListMap;
+        List<String> strings;
+        for (String line : collect) {
+            if (line.isEmpty()) {
+                continue;
+            }
+
+            String firstSymbol = line.substring(0, 1);
+
+            integerListMap = map.get(firstSymbol);
+            if (integerListMap == null) {
+                integerListMap = new HashMap<>();
+            }
+
+            strings = integerListMap.get(line.length());
+            if (strings == null) {
+                strings = new ArrayList<>();
+            }
+
+            strings.add(line);
+            integerListMap.put(line.length(), strings);
+            map.put(firstSymbol, integerListMap);
+        }
+
 
         assertEquals("[From, Feed]", map.get("F").get(4).toString());
-        assertEquals("[by, be, by]", map.get("b").get(2).toString());
         assertEquals("[the, thy, thy, thy, too, the, the, thy, the, the, the]",
                 map.get("t").get(3).toString());
+        assertEquals("[by, be, by]", map.get("b").get(2).toString());
         assertEquals("[beauty, bright]", map.get("b").get(6).toString());
     }
 
