@@ -253,41 +253,39 @@ public class Exercises {
 //                .filter(s -> !s.isEmpty())
 //                        .collect(Collectors.groupingBy(s->s.substring(0,1), Collectors.groupingBy(String::length)));
 
-        List<String> collect = reader.lines()
-                .flatMap(s -> Stream.of(s.split(REGEXP)))
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toList());
-
         map = new HashMap<>();
-        Map<Integer, List<String>> integerListMap;
-        List<String> strings;
-        for (String line : collect) {
-            if (line.isEmpty()) {
-                continue;
+        List<String> lines = reader.lines().collect(Collectors.toList());
+        List<String> listWords;
+        Map<Integer, List<String>> wordsLengthKeyMap;
+        for (String line : lines) {
+            String[] words = line.split(REGEXP);
+            for (String word : words) {
+                if (word.isEmpty()) {
+                    continue;
+                }
+
+                String firstSymbol = word.substring(0, 1);
+
+                wordsLengthKeyMap = map.get(firstSymbol);
+                if (wordsLengthKeyMap == null) {
+                    wordsLengthKeyMap = new HashMap<>();
+                }
+
+                listWords = wordsLengthKeyMap.get(word.length());
+                if (listWords == null) {
+                    listWords = new ArrayList<>();
+                }
+
+                listWords.add(word);
+                wordsLengthKeyMap.put(word.length(), listWords);
+                map.put(firstSymbol, wordsLengthKeyMap);
             }
-
-            String firstSymbol = line.substring(0, 1);
-
-            integerListMap = map.get(firstSymbol);
-            if (integerListMap == null) {
-                integerListMap = new HashMap<>();
-            }
-
-            strings = integerListMap.get(line.length());
-            if (strings == null) {
-                strings = new ArrayList<>();
-            }
-
-            strings.add(line);
-            integerListMap.put(line.length(), strings);
-            map.put(firstSymbol, integerListMap);
         }
 
-
         assertEquals("[From, Feed]", map.get("F").get(4).toString());
+        assertEquals("[by, be, by]", map.get("b").get(2).toString());
         assertEquals("[the, thy, thy, thy, too, the, the, thy, the, the, the]",
                 map.get("t").get(3).toString());
-        assertEquals("[by, be, by]", map.get("b").get(2).toString());
         assertEquals("[beauty, bright]", map.get("b").get(6).toString());
     }
 
